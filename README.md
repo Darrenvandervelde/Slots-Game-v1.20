@@ -1,51 +1,42 @@
 # Slots Game v1.20
 
-A clean, classic-style slot machine game built with **vanilla HTML, CSS, and JavaScript** — no frameworks, no dependencies.
+A classic 3-reel slot machine built with **pure HTML, CSS, and JavaScript** — no libraries, no frameworks.
 
-Perfect for demonstrating core programming concepts:
-- Smooth animated loops using CSS transforms
-- Precise timing and staggered animations
-- Conditional win logic with `if` statements
-- DOM manipulation and event handling
-- Game state management (balance, bets, wins)
+Showcasing smooth animations, precise timing, clean loops, and smart `if` logic.
 
-**[Live Demo](https://slots-game-v1-20.vercel.app/)** *(replace with your actual link)*
+<br>
 
-![Slots Game Screenshot](screenshot.png)  
-*(Add a screenshot.png in your repo for best results)*
+## Live Demo
+
+<p align="center">
+  <a href="https://yourusername.github.io/slots-game" target="_blank">
+    <img src="screenshot.png" alt="Slots Game Live Demo" width="800" style="border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);">
+  </a>
+</p>
+
+<p align="center">
+  <strong>Click the image above to play instantly! (or <a href="https://yourusername.github.io/slots-game" target="_blank">open in new tab</a>)</strong>
+</p>
+
+<br>
 
 ## Features
 
-- 3-reel classic slot machine with 6 symbols
-- Ultra-smooth spinning animation with motion blur and realistic easing
-- Staggered reel stops for dramatic effect
-- Win detection: 3-of-a-kind and 2-of-a-kind payouts
-- $10 fixed bet with running balance
-- Responsive design — works on mobile and desktop
-- Spacebar support for quick spins
-- Clean, readable, well-commented code
+- Ultra-smooth reel spinning with motion blur and realistic easing
+- Staggered reel stops (left → center → right)
+- Win detection: 3-of-a-kind = big payout, 2-of-a-kind = small win
+- $10 fixed bet with live balance tracking
+- Fully responsive — looks great on phone, tablet, and desktop
+- Press **Spacebar** to spin instantly
+- No dependencies — just one `index.html` file
 
-## Technologies Used
+## Skills Demonstrated
 
-- HTML5
-- CSS3 (Flexbox, transforms, transitions)
-- Vanilla JavaScript (ES6+)
-
-## How to Play
-
-1. Click **SPIN** or press **Spacebar**
-2. Watch the reels spin and stop one by one
-3. Match 3 symbols for big wins!
-4. Balance updates automatically
-5. Game disables when credits run out
-
-## Project Goals (Skill Showcase)
-
-This project was built to demonstrate proficiency in:
 ```js
-✓ Looping symbol animation with CSS + JS
-✓ Precise timing using setTimeout and requestAnimationFrame
-✓ Complex if/else win condition logic
-✓ DOM manipulation and dynamic updates
-✓ Clean code structure and readability
-✓ Performance-optimized animations
+Smooth looping animations with CSS transforms
+Precise staggered timing using setTimeout()
+Complex if/else win condition logic
+DOM manipulation & real-time updates
+Game state management (balance, spinning state)
+Performance-optimized animations (will-change, requestAnimationFrame)
+Clean, readable vanilla JavaScript
