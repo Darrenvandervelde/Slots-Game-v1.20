@@ -1,1 +1,271 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cosmic Fortune Slots</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(#0f001f, #1a0033);
+    font-family: 'Arial', sans-serif;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+  }
+  h1 {
+    margin: 20px;
+    font-size: 3em;
+    text-shadow: 0 0 20px #ff00cc;
+  }
+  #game {
+    background: rgba(0,0,0,0.6);
+    padding: 20px;
+    border-radius: 20px;
+  }
+  #reels {
+    display: flex;
+    gap: 15px;
+    background: #000;
+    padding: 20px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: inset 0 0 30px #00ffff;
+  }
+  .reel {
+    width: 120px;
+    height: 360px;
+    background: linear-gradient(to bottom, #111, #222);
+    overflow: hidden;
+    border-radius: 10px;
+    position: relative;
+    box-shadow: 0 0 20px #00ffff;
+  }
+  .symbols {
+    position: absolute;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: transform 3s cubic-bezier(0.2, 0.8, 0.4, 1);
+  }
+  .symbol {
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    background: rgba(255,255,255,0.05);
+  }
+  #controls {
+    margin-top: 30px;
+    text-align: center;
+  }
+  button {
+    padding: 15px 40px;
+    font-size: 1.5em;
+    background: #ff00cc;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  button:hover { transform: scale(1.1); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  #balance, #win-display {
+    font-size: 2em;
+    margin: 15px;
+    text-shadow: 0 0 15px #00ff00;
+  }
+  .win-animation {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    background: rgba(255,255,0,0.3);
+    animation: flash 0.6s 4;
+  }
+  @keyframes flash {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<h1>COSMIC FORTUNE SLOTS</h1>
+
+<div id="game">
+  <div id="reels">
+    <div class="reel"><div class="symbols" id="reel0"></div></div>
+    <div class="reel"><div class="symbols" id="reel1"></div></div>
+    <div class="reel"><div class="symbols" id="reel2"></div></div>
+  </div>
+
+  <div id="controls">
+    <div id="balance">Balance: $1000</div>
+    <button id="spinBtn">SPIN ($10)</button>
+    <div id="win-display"></div>
+  </div>
+</div>
+
+<script>
+// Symbols (emoji) with payout multipliers (relative to bet)
+const symbols = [
+  { emoji: "🍒", value: 2 },
+  { emoji: "🍋", value: 3 },
+  { emoji: "🔔", value: 5 },
+  { emoji: "💎", value: 10 },
+  { emoji: "7️⃣", value: 20 },
+  { emoji: "🌟", value: 50 }  // Wild / Jackpot
+];
+
+let balance = 1000;
+const bet = 10;
+let isSpinning = false;
+
+const reels = [
+  document.getElementById('reel0'),
+  document.getElementById('reel1'),
+  document.getElementById('reel2')
+];
+
+// Create infinite symbol strip for each reel
+function createReelStrip() {
+  const strip = document.createElement('div');
+  strip.className = 'symbols';
+  
+  // Show many symbols so it looks continuous
+  for (let i = 0; i < 30; i++) {
+    const sym = symbols[Math.floor(Math.random() * symbols.length)];
+    const div = document.createElement('div');
+    div.className = 'symbol';
+    div.textContent = sym.emoji;
+    div.dataset.value = symbols.indexOf(sym);
+    strip.appendChild(div);
+  }
+  return strip;
+}
+
+// Initialize reels
+reels.forEach((container, i) => {
+  const strip = createReelStrip();
+  container.appendChild(strip);
+  reels[i] = strip;
+});
+
+function getResult() {
+  const result = [];
+  reels.forEach(strip => {
+    const symbolsInView = strip.querySelectorAll('.symbol');
+    const middleIndex = Math.floor(symbolsInView.length / 2);
+    const middleSymbol = symbolsInView[middleIndex];
+    result.push({
+      emoji: middleSymbol.textContent,
+      value: parseInt(middleSymbol.dataset.value)
+    });
+  });
+  return result;
+}
+
+function calculateWin(result) {
+  const values = result.map(r => r.value);
+  
+  // Three of a kind
+  if (values[0] === values[1] && values[1] === values[2]) {
+    const multiplier = symbols[values[0]].value;
+    return bet * multiplier;
+  }
+  
+  // Two same + wild (🌟 is index 5)
+  if (values.includes(5)) {
+    const nonWilds = values.filter(v => v !== 5);
+    if (new Set(nonWilds).size === 1) {
+      return bet * symbols[nonWilds[0]].value * 0.5; // half payout with wild
+    }
+  }
+  
+  return 0;
+}
+
+function spin() {
+  if (isSpinning || balance < bet) return;
+  
+  isSpinning = true;
+  document.getElementById('spinBtn').disabled = true;
+  document.getElementById('win-display').textContent = '';
+  document.getElementById('game').querySelectorAll('.win-animation').forEach(el => el.remove());
+  
+  balance -= bet;
+  updateBalance();
+
+  const spins = [4000 + Math.random() * 1000, 4500 + Math.random() * 1000, 5000 + Math.random() * 1000];
+
+  reels.forEach((strip, i) => {
+    // Random final position
+    const finalPos = -120 * (20 + Math.floor(Math.random() * symbols.length));
+    strip.style.transition = 'none';
+    strip.style.transform = `translateY(0px)`;
+    
+    requestAnimationFrame(() => {
+      strip.style.transition = `transform ${spins[i]/1000}s cubic-bezier(0.2, 0.8, 0.4, 1)`;
+      strip.style.transform = `translateY(${finalPos}px)`;
+    });
+
+    setTimeout(() => {
+      if (i === 2) {
+        setTimeout(checkWin, 600);
+      }
+    }, spins[i]);
+  });
+}
+
+function checkWin() {
+  const result = getResult();
+  const winAmount = calculateWin(result);
+  
+  if (winAmount > 0) {
+    balance += winAmount;
+    document.getElementById('win-display').textContent = `WIN $${winAmount}! ${result.map(r=>r.emoji).join(' ')}`;
+    document.getElementById('win-display').style.color = '#ffd700';
+    
+    // Flash effect
+    const flash = document.createElement('div');
+    flash.className = 'win-animation';
+    document.getElementById('game').appendChild(flash);
+  } else {
+    document.getElementById('win-display').textContent = 'No win - try again!';
+    document.getElementById('win-display').style.color = '#ff3366';
+  }
+  
+  updateBalance();
+  isSpinning = false;
+  document.getElementById('spinBtn').disabled = false;
+}
+
+function updateBalance() {
+  document.getElementById('balance').textContent = `Balance: $${balance}`;
+  if (balance < bet) {
+    document.getElementById('spinBtn').textContent = 'NO FUNDS';
+    document.getElementById('spinBtn').disabled = true;
+  }
+}
+
+// Click to spin
+document.getElementById('spinBtn').addEventListener('click', spin);
+
+// Optional: Spacebar to spin
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space' && !isSpinning) {
+    e.preventDefault();
+    spin();
+  }
+});
+
+updateBalance();
+</script>
+
+</body>
+</html>
