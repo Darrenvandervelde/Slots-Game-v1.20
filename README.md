@@ -9,7 +9,7 @@ Showcasing smooth animations, precise timing, clean loops, and smart `if` logic.
 ## Live Demo
 
 <p align="center">
-  <a href="https://yourusername.github.io/slots-game" target="_blank">
+  <a href="https://slots-game-v1-20.vercel.app/" target="_blank">
     <img src="screenshot.png" alt="Slots Game Live Demo" width="800" style="border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);">
   </a>
 </p>
