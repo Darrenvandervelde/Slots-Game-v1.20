@@ -15,7 +15,7 @@ Showcasing smooth animations, precise timing, clean loops, and smart `if` logic.
 </p>
 
 <p align="center">
-  <strong>Click the image above to play instantly! (or <a href="https://yourusername.github.io/slots-game" target="_blank">open in new tab</a>)</strong>
+  <strong>Click the image above to play instantly! (or <a href="https://slots-game-v1-20.vercel.app/" target="_blank">Live Demo</a>)</strong>
 </p>
 
 <br>
